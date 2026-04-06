@@ -2,7 +2,9 @@ const express = require('express');
 
 const app = express();
 
-app.listen(3000, ()=>{
-    console.log("Server Started Successfully on port", 3000);
+const { PORT } = require('./config/serverconfig');
+
+app.listen(PORT, () => {
+    console.log(`Server Started Successfully on ${PORT}`);
     
 })
