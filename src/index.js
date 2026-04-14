@@ -1,27 +1,15 @@
-const express = require('express');
-const connect = require('./config/database');
+import express from 'express';
+import {connect} from './config/database.js';
 const app = express();
 
-const { PORT } = require('./config/serverconfig');
+import { PORT } from './config/serverconfig.js';
 
-const { TweetRepository } = require('./repository/index');
-const TweeetService = require('./services/tweet-service');
+import service from './services/tweet-service.js'
 
 app.listen(PORT, async () => {
     console.log(`Server Started Successfully on ${PORT}`);
     await connect();
     console.log("Mongo Db connected");
-
-    // let repo = new HashtagRepository();
-    //     await repo.bulkCreate([
-    //         {
-    //             title: 'IPL26',
-    //             tweets: []
-    //         }
-    //     ])
-
-    let service = new TweeetService();
-    const tweet = await service.create({content: 'my #working Twitter'});
-    console.log(tweet);
-    
+    let ser = new service();
+    await ser.create({content: 'Done With #Es6Module '});
 })
