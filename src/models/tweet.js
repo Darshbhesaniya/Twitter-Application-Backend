@@ -6,14 +6,6 @@ const tweetSchema = new mongoose.Schema({
         required: true,
         max: [250, 'Tweet Cannot be more than 250 Charcters']
     },
-   hashtag:[
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Hashtag'
-        }
-   ]
-    
-
 }, {timestamps: true});
 
 

@@ -7,9 +7,9 @@ class TweeetService {
 
     async create(data) {
         const content = data.content;
-        let tags = content.match(/#[a-zA-Z0-9_]+/g); // this regex extracts hashtags
-        tags = tags.map((tag) => tag.substring(1));
-
+        let tags = content.match(/#[a-zA-Z0-9_]+/g) || []; // this regex extracts hashtags
+        tags = tags.map((tag) => tag.substring(1));   // for remove a "#" Ex: #coding => coding 
+        tags = tags.map((tag) => tag.toLowerCase())   // for convert to lowercase 
 
         // 1. create a new tweet 
         const tweet = await this.tweetRepository.create(data);
