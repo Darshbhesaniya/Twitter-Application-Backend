@@ -1,5 +1,5 @@
 import { TweetRepository, HashtagRepository } from '../repository/index.js';
-class TweeetService {
+class TweetService {
     constructor() {
         this.tweetRepository = new TweetRepository();
         this.hashtagRepository = new HashtagRepository();
@@ -43,4 +43,4 @@ class TweeetService {
 
 }
 
-export default TweeetService;
+export default TweetService;
