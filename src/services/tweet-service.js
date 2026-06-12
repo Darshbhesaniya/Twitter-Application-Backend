@@ -32,7 +32,6 @@ class TweetService {
             tag.markModified('tweets');
             await tag.save();
         }
-        // todo create a hashtag and add here 
         /**
          * 1. Bulkcreate in mongoose
          * 2. filter title of hashtag based on multiple tags
