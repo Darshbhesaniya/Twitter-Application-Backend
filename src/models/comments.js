@@ -5,9 +5,11 @@ const commentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    userEmail:{
-        type: String,
-    },
+   userId :{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+   }
 }, {timestamps: true});
 
 const Comment = mongoose.model('Comment',commentSchema);
