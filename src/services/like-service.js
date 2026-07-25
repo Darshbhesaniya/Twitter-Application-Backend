@@ -8,7 +8,7 @@ class LikeService {
     }
 
     async toggleLike(modelId,modelType, userId){ // api/v1/likes/toggle?id=model&type=Tweet
-        console.log(modelId,modelType,userId);
+        console.log("Toggle Like Feature From like-service:",modelId,modelType,userId);
         if(modelType == 'Tweet'){
             var likeable = await this.tweetRepository.find(modelId);
         } else if(modelType == 'Comment'){
@@ -23,12 +23,12 @@ class LikeService {
             onModel: modelType,
             likeable: modelId
         });
-        console.log("EXISTS",exists);
+        console.log("Like is EXISTS",exists);
         // if like is exists in datanse then execute this statement
         if(exists){
             likeable.likes.pull(exists._id);
             await likeable.save();
-            await exists.deleteOne(); // ✅ fixed
+            await exists.deleteOne(); 
             var isAdded = false;
         }
         // if like is not found is database then this statement execute 

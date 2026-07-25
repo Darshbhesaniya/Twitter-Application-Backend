@@ -7,6 +7,9 @@ import apiRoutes from './routes/index.js';
 
 import { UserRepository, TweetRepository } from './repository/index.js';
 import LikeService from './services/like-service.js';
+import User from './models/user.js';  
+import Tweet from './models/tweet.js';
+import Like from './models/like.js';
 const app = express();
 
 app.use(express.json());
@@ -23,12 +26,15 @@ app.listen(PORT, async () => {
     await connect();
     console.log("Mongo Db connected");
 
-    const userRepo = new UserRepository();
-    const tweetRepo = new TweetRepository();
-    const tweets = await tweetRepo.getAll(0, 10);
+    // const userRepo = new UserRepository();
+    // const tweetRepo = new TweetRepository();
+    // const tweets = await tweetRepo.getAll(0, 10);
   
-    const user = await userRepo.getAll();
+    // const user = await userRepo.getAll();
 
-    const likeService = new LikeService();
-    await likeService.toggleLike(tweets[0].id, 'Tweet', user[0].id);
+    // const likeService = new LikeService();
+    // await likeService.toggleLike(tweets[0].id, 'Tweet', user[0].id);
+
+
+
 })
