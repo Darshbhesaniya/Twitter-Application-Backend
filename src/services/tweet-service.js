@@ -1,11 +1,22 @@
 import { TweetRepository, HashtagRepository } from '../repository/index.js';
+import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/upload.js';
 class TweetService {
     constructor() {
         this.tweetRepository = new TweetRepository();
         this.hashtagRepository = new HashtagRepository();
     }
 
-    async create(data) {
+    async create(data, file) {
+        
+         if (file) {
+            const result = await uploadOnCloudinary(file.path);
+
+            if (result) {
+                data.image = result.secure_url;
+                data.imagePublicId = result.public_id;
+            }
+        }
+
         const content = data.content;
         let tags = content.match(/#[a-zA-Z0-9_]+/g) || []; // this regex extracts hashtags
         tags = tags.map((tag) => tag.substring(1));   // for remove a "#" Ex: #coding => coding 
@@ -13,6 +24,7 @@ class TweetService {
 
         // 1. create a new tweet 
         const tweet = await this.tweetRepository.create(data);
+
 
         // 2 find already present Tags in the hashtag model
         let alreadyPresentTags = await this.hashtagRepository.findByName(tags);
@@ -43,6 +55,21 @@ class TweetService {
     async get(tweetId) {
         const tweet = await this.tweetRepository.getWithComments(tweetId)
         return tweet;
+    }
+
+    async destroy(tweetId){
+        const tweet = await this.tweetRepository.get(tweetId);
+
+        if(!tweet){
+            throw new Error("Tweet Not Found")
+        }
+
+        if(tweet.imagePublicId){
+            await deleteFromCloudinary(tweet.imagePublicId);
+        }
+
+        const response = await this.tweetRepository.destroy(tweetId);
+        return response;
     }
 
 }
