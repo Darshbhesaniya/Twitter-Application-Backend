@@ -75,3 +75,28 @@ export const destroyTweet = async (req,res) => {
         });
     }
 };
+
+export const getAllTweets = async (req, res) => {
+    try {
+        
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        
+        const response = await tweetService.getAll(page, limit);
+
+        return res.status(200).json({
+            success: true,
+            message: "Tweet fetched Successfully",
+            data: response,
+            error: {}
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "something Went Wrong",
+            data: {},
+            error: error
+        })
+    }
+}

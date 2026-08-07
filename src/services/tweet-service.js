@@ -72,6 +72,14 @@ class TweetService {
         return response;
     }
 
+    async getAll(page, limit){
+
+        const offset = (page - 1) * limit;
+        
+        const tweets = await this.tweetRepository.getAll(offset, limit);
+
+        return tweets;
+    }
 }
 
 export default TweetService;
