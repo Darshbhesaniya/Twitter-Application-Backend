@@ -15,6 +15,15 @@ class UserRepository extends CrudRepository{
         }
     }
 
+    async get(id) {
+        try {
+            const response = await User.findById(id).select("-password");
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }
 
 export default UserRepository;

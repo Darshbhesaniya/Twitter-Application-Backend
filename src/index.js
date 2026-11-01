@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { PORT } from './config/serverconfig.js';
 import passport from 'passport';
 
@@ -11,6 +12,7 @@ import apiRoutes from './routes/index.js';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -25,4 +27,4 @@ app.listen(PORT, async () => {
     console.log(`Server Started Successfully on ${PORT}`);
     await connect();
     console.log("Mongo Db connected");
-})
+});
