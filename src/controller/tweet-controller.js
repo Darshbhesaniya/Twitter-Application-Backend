@@ -4,8 +4,11 @@ const tweetService = new TweetService();
 export const createTweet = async (req, res) =>{
     try {
         console.log(req.file);
-        
-        const response = await tweetService.create(req.body,req.file);
+        const data = {
+            ...req.body,
+            user: req.user?.id || req.user?._id
+        };
+        const response = await tweetService.create(data, req.file);
         return res
                .status(201)
                .json({
@@ -22,7 +25,7 @@ export const createTweet = async (req, res) =>{
                 status(500)
                 .json({
                     success: false,
-                    message: 'Something Went Wrong',
+                    message: error.message || 'Something Went Wrong',
                     data: {},
                     error: error
                  })
@@ -48,7 +51,7 @@ export const getTweet = async (req, res) => {
                 status(500)
                 .json({
                     success: false,
-                    message: 'Something Went Wrong',
+                    message: error.message || 'Something Went Wrong',
                     data: {},
                     error: error
                  })
@@ -57,7 +60,7 @@ export const getTweet = async (req, res) => {
 
 export const destroyTweet = async (req,res) => {
     try {
-        const response = await tweetService.destroy(req.params.id);
+        const response = await tweetService.destroy(req.params.id, req.user?.id || req.user?._id);
         
         return res.status(200).json({
             success: true,
@@ -67,9 +70,10 @@ export const destroyTweet = async (req,res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
+        const statusCode = error.message?.includes("Unauthorized") ? 403 : 500;
+        return res.status(statusCode).json({
             success: false,
-            message: "Something Went Wrong",
+            message: error.message || "Something Went Wrong",
             data: {},
             error: error
         });
@@ -81,8 +85,10 @@ export const getAllTweets = async (req, res) => {
         
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
+        // Optional: filter by userId to get a specific user's tweets (used in Profile page)
+        const userId = req.query.userId || null;
         
-        const response = await tweetService.getAll(page, limit);
+        const response = await tweetService.getAll(page, limit, userId);
 
         return res.status(200).json({
             success: true,

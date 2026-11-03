@@ -6,6 +6,10 @@ const tweetSchema = new mongoose.Schema({
         required: true,
         max: [250, 'Tweet Cannot be more than 250 Charcters']
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -27,18 +31,6 @@ const tweetSchema = new mongoose.Schema({
         default: null
     }
 }, { timestamps: true });
-
-
-
-
-// tweetSchema.virtual('contentWithEmail').get(function process(){
-//     return `${this.content} \nCreated By: ${this.userEmail}`;
-// })
-
-// tweetSchema.pre('save', async function(){
-//     console.log("inside a hook");
-//     this.content = this.content + '.....';
-// });
 
 const Tweet = mongoose.model('Tweet', tweetSchema);
 export default Tweet;

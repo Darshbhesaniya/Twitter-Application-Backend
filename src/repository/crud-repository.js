@@ -13,9 +13,10 @@ class CrudRepository {
         }
     }
 
-    async destroy(id) {
+    async destroy(id, session = null) {
         try {
-            const result = await this.model.findByIdAndDelete(id);
+            const opts = session ? { session } : {};
+            const result = await this.model.findByIdAndDelete(id, opts);
             return result;
         } catch (error) {
             console.log("something went wrong in crud repo");

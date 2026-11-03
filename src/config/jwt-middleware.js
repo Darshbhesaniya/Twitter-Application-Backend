@@ -7,7 +7,7 @@ const ExtractJwt = JWT.ExtractJwt;
 
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: 'twitter_secret'
+    secretOrKey: process.env.JWT_SECRET || 'twitter_secret'
 }
 
 export const passportAuth = (passport) => {

@@ -1,6 +1,6 @@
 import Tweet from '../models/tweet.js';
+import Like from '../models/like.js';
 import CrudRepository from './crud-repository.js';
-
 
 class TweetRepository extends CrudRepository {
     constructor(){
@@ -10,7 +10,12 @@ class TweetRepository extends CrudRepository {
     async create(data){
         try {
             const tweet = await Tweet.create(data);
-            return tweet;
+            // Populate user (including username) and likes so response includes author & like details
+            const populated = await Tweet.findById(tweet._id)
+                .populate({ path: 'user', select: 'name email username' })
+                .populate({ path: 'likes' })
+                .lean();
+            return populated;
         } catch (error) {
             console.log(error);
         }
@@ -18,33 +23,40 @@ class TweetRepository extends CrudRepository {
 
     async getWithComments(id){
         try {
-            const tweet = await Tweet.findById(id).populate({
-                path:'comments',
-                populate: {
-                    path: 'comments'
-                }
-            }).lean();
+            const tweet = await Tweet.findById(id)
+                .populate({ path: 'user', select: 'name email username' })
+                .populate({
+                    path: 'comments',
+                    populate: { path: 'comments' }
+                })
+                .populate({ path: 'likes' })
+                .lean();
             return tweet;
         } catch (error) {
             console.log(error);
         }
     }
 
-
-    async getAll(offset, limit){
+    async getAll(offset, limit, userId = null){
         try {
-            const tweet = await Tweet.find().sort({ createdAt: -1 }).skip(offset).limit(limit);
-            return tweet;
+            // Build filter: if userId provided, only return that user's tweets
+            const filter = userId ? { user: userId } : {};
+            const tweets = await Tweet.find(filter)
+                .populate({ path: 'user', select: 'name email username' })
+                .populate({ path: 'likes' })
+                .sort({ createdAt: -1 })
+                .skip(offset)
+                .limit(limit)
+                .lean();
+            return tweets;
         } catch (error) {
             console.log(error);
-            
         }
     }
 
-   async find(id){
+    async find(id){
         try {
-            const tweet = await Tweet.findById(id).populate({path:'likes'});
-            console.log(tweet);
+            const tweet = await Tweet.findById(id).populate({ path: 'likes' });
             return tweet;
         } catch (error) {
             console.log(error);

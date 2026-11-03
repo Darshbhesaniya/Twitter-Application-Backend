@@ -1,4 +1,4 @@
-import { LikeRepository,TweetRepository } from '../repository/index.js';
+import { LikeRepository, TweetRepository } from '../repository/index.js';
 import Tweet from '../models/tweet.js';
 
 class LikeService {
@@ -7,34 +7,31 @@ class LikeService {
         this.tweetRepository = new TweetRepository();
     }
 
-    async toggleLike(modelId,modelType, userId){ // api/v1/likes/toggle?id=model&type=Tweet
-        console.log("Toggle Like Feature From like-service:",modelId,modelType,userId);
-        if(modelType == 'Tweet'){
+    async toggleLike(modelId, modelType, userId){
+        console.log("Toggle Like Feature From like-service:", modelId, modelType, userId);
+        if (modelType === 'Tweet'){
             var likeable = await this.tweetRepository.find(modelId);
-        } else if(modelType == 'Comment'){
-            //  after implement comment model
+        } else if (modelType === 'Comment'){
+            // after implement comment model
         } else {
             throw new Error('unknown model type');
         }
 
-        // this is a check in database if there is like is exists or not in DB with these parameter
         const exists = await this.likeRepository.findByUserAndLikeable({
             user: userId,
             onModel: modelType,
             likeable: modelId
         });
-        console.log("Like is EXISTS",exists);
-        // if like is exists in datanse then execute this statement
-        if(exists){
+
+        console.log("Like is EXISTS", exists);
+        if (exists){
             likeable.likes.pull(exists._id);
             await likeable.save();
             await exists.deleteOne(); 
             var isAdded = false;
-        }
-        // if like is not found is database then this statement execute 
-         else {
+        } else {
             const newLike = await this.likeRepository.create({
-                user:userId,
+                user: userId,
                 onModel: modelType,
                 likeable: modelId
             });
@@ -45,6 +42,15 @@ class LikeService {
         return isAdded;
     }
 
+    async getUserLikedTweets(userId, page = 1, limit = 10) {
+        try {
+            const offset = (page - 1) * limit;
+            const tweets = await this.likeRepository.getUserLikedTweets(userId, offset, limit);
+            return tweets;
+        } catch (error) {
+            throw error;
+        }
+    }
 }  
 
 export default LikeService;
