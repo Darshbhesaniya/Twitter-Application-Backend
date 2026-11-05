@@ -1,22 +1,16 @@
 import multer from 'multer';
 
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/");
-     },
-
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
-    },
-});
+// Use memoryStorage so multer holds the file in RAM (buffer) instead of writing
+// to a local "uploads/" folder. This is required for cloud deployments (Render,
+// Railway, etc.) where the local filesystem is ephemeral and "uploads/" may not
+// exist. The buffer is passed directly to Cloudinary — no disk write needed.
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
-        cb(null, true)
-    }
-    else {
-        cb(new Error("Only image files are allowed"), false)
+        cb(null, true);
+    } else {
+        cb(new Error("Only image files are allowed"), false);
     }
 };
 

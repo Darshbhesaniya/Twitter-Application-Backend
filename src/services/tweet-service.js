@@ -9,9 +9,10 @@ class TweetService {
     }
 
     async create(data, file) {
-        
-         if (file) {
-            const result = await uploadOnCloudinary(file.path);
+
+        if (file) {
+            // file.buffer is provided by multer memoryStorage (no disk path needed)
+            const result = await uploadOnCloudinary(file.buffer);
 
             if (result) {
                 data.image = result.secure_url;
